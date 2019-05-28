@@ -18,7 +18,7 @@ The data scraping has been done in 2 stages:
 
 **Data cleaning**
 
-The extracted data contains a lot of junk characters and information that is data cleansed.
+The extracted information is data cleansed to remove any unwanted junk characters, improper formatting, and duplicate column records.
 
 **Uploading to Google BigQuery**
 
