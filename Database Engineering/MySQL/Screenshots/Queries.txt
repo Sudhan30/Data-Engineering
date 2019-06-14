@@ -1,0 +1,109 @@
+1.Which user had the maximum number of visits and when?
+
+
+
+select s.fullvisitorid,Date,sum(vists) VisitMax from  sessionid s 
+
+inner join visitinformation v on  v.sessionid=s.sessionid
+group by  s.fullvisitorid,v.date
+
+order by VisitMax desc
+
+limit 1
+
+2. Is a blackberry user less likely to visit the store than iOS user?
+
+select OS, sum(OScount) from ( 
+
+select s.fullvisitorid,d.operatingsystem OS,count(d.operatingsystem) OSCount from  sessionid s 
+
+inner join device d on  d.sessionid=s.sessionid
+
+group by  s.fullvisitorid,d.operatingsystem) OSAlias
+
+where OS in ('iOS','BlackBerry')
+
+group by OS
+
+
+3. Which date had the most number of iOS users from Belgium?
+
+
+
+select Date,operatingsystem,count(operatingsystem) OSCount from sessionid s
+
+inner join device d on  d.sessionid=s.sessionid
+
+inner join geonetwork g on g.sessionid=s.sessionid
+
+inner join visitinformation v on v.sessionid=s.sessionid
+
+where operatingsystem= 'iOS' and country like 'Belgium'
+
+group by operatingSystem,Date
+
+order by OSCount desc
+
+limit 1
+
+4. Were more mobile devices (than non-mobile devices) used to visit the store?
+
+
+
+select cast(ismobile AS UNSIGNED) as Mobile,count(cast(ismobile AS UNSIGNED)) CountMobile from device
+
+group by cast(ismobile AS UNSIGNED)
+
+5.Provide a breakdown of store pageviews by city
+
+
+
+select city,sum(pageviews) PageViewCount from sessionid s
+
+inner join geonetwork g on g.sessionid=s.sessionid
+
+inner join visitinformation v on v.sessionid=s.sessionid
+
+where city not in ('not available in demo dataset','(not set)')
+
+group by city
+
+order by PageViewCount desc
+
+6. How many users used only Windows devices to visit the store?
+
+
+
+select count(s.fullvisitorId) WindowsUserCount from sessionid s
+
+inner join device d on d.sessionid=s.sessionid
+
+where operatingsystem='Windows'
+
+7. How many visitors had zero pageviews?
+
+
+
+select count(visitid) ZeroPageviews from sessionid s
+
+inner join visitinformation v on s.sessionid=v.sessionid
+
+where pageviews=0
+
+8. Which city (other than unknown) had the most number of desktop users?
+
+
+
+select city,count(s.fullvisitorid) DesktopUserCount from sessionid s
+
+inner join device d on s.sessionid=d.sessionid
+
+inner join geonetwork g on g.sessionid=s.sessionid
+
+where devicecategory = 'desktop' and city not in ('not available in demo dataset','(not set)')
+
+group by city
+
+order by DesktopUserCount desc
+
+limit 1
